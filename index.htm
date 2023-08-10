@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title data-i18n="page.title">Sample title</title>
+    <script>
+        new (function () {
+            const me = this;
+            me.languages = null;
+
+            me.get_languages = function () {
+                if (me.languages != null) {
+                    return Promise.resolve(me.languages);
+                }
+                return fetch("languages.json")
+                    .then((r) => r.json())
+                    .then((languages) => {
+                        me.languages = languages;
+                        return languages;
+                    });
+            };
+
+            me.fill_languages = function () {
+                return Promise.resolve(me.languages);
+            };
+
+            me.get_user_language = function (optional) {
+                let languages = [];
+                if (optional && (optional.length == 2 || optional.length == 5)) {
+                    languages.push(optional);
+                } else {
+                    let from_location = window.location.hash;
+                    if (from_location.length == 6 || from_location.length == 3) {
+                        languages.push(window.location.hash.substring(1));
+                    } else {
+                        if (navigator.languages) {
+                            languages = languages.concat(navigator.languages);
+                        } else {
+                            languages.push(navigator.language);
+                        }
+                    }
+                }
+                languages.push("en"); // Add default
+
+                const user_language = languages.find((language) => {
+                    if (me.languages[language]) {
+                        return true;
+                    } else if (language.length == 5) {
+                        if (me.languages[language.substring(0, 2)]) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+                return Promise.resolve(user_language);
+            };
+
+            me.resolve_language = function (language) {
+                const selected = me.languages[language]
+                if (selected) {
+                    if (selected.alias) {
+                        return me.resolve_language(selected.alias);
+                    } else {
+                        return Promise.resolve(language);
+                    }
+                }
+                return Promise.reject("Language \"" + language + "\" not found.");
+            }
+
+            me.load_language = function (language) {
+                return fetch("_" + language + ".json")
+                    .then((r) => r.json())
+                    .then((translation) => {
+                        let elements = document.querySelectorAll("[data-i18n]");
+                        elements.forEach((element) => {
+                            let key = element.dataset.i18n.split(".");
+                            let value = key.reduce((o, i) => o[i], translation);
+                            if (value) {
+                                element.innerHTML = value;
+                            }
+                        });
+                    });
+            }
+
+            me.get_languages()
+                .then(() => me.fill_languages())
+                .then(() => me.get_user_language())
+                .then((language) => me.resolve_language(language))
+                .then((language) => me.load_language(language))
+                .catch((reason) => console.error("Failed to load language.", reason));
+
+        })();
+    </script>
+</head>
+
+<body>
+    <div>
+        <h1 data-i18n="title">Sample Document</h1>
+        <h2 data-i18n="section.1.title">Sample Section</h2>
+        <p data-i18n="section.1.content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+            laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+</body>
+
+</html>

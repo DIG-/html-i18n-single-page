@@ -1,0 +1,11 @@
+{
+    "page": {
+        "title": "Documento de Exemplo"
+    },
+    "section": {
+        "1": {
+            "title": "Seção de exemplo",
+            "content": "Conteúdo de exemplo"
+        }
+    }
+}
