@@ -23,6 +23,9 @@ body {
     top: 8pt;
     right: 8pt;
     font-size: 16pt;
+    box-shadow: 0 4pt 8pt rgb(0 0 0 / 0.2);
+    border: 1pt solid rgb(0 0 0 / 0.1);
+    border-radius: 8pt;
 }
 
 .emoji {
