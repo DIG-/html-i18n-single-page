@@ -4,19 +4,15 @@
 
     me.flag_element = () => document.getElementById("flag");
 
-    me.get_languages = function () {
-        if (me.languages != null) {
-            return Promise.resolve(me.languages);
-        }
-        return fetch("languages.json")
+    me.get_languages = async () => me.languages != null ? me.languages :
+        fetch("languages.json")
             .then((r) => r.json())
             .then((languages) => {
                 me.languages = languages;
                 return languages;
             });
-    };
 
-    me.fill_languages = function () {
+    me.fill_languages = async () => {
         let flag_element = me.flag_element();
         Object.entries(me.languages)
             .filter(([_, data]) => data.flag != null)
@@ -26,10 +22,10 @@
                 option.text = data.flag;
                 flag_element.add(option);
             });
-        return Promise.resolve(me.languages);
+        return me.languages;
     };
 
-    me.get_user_language = function (optional) {
+    me.get_user_language = async (optional) => {
         let languages = [];
         if (optional && (optional.length == 2 || optional.length == 5)) {
             languages.push(optional);
@@ -57,36 +53,34 @@
             }
             return false;
         });
-        return Promise.resolve(user_language);
+        return user_language;
     };
 
-    me.resolve_language = function (language) {
+    me.resolve_language = async (language) => {
         const selected = me.languages[language]
         if (selected) {
             if (selected.alias) {
                 return me.resolve_language(selected.alias);
             } else {
-                return Promise.resolve(language);
+                return language;
             }
         }
         return Promise.reject("Language \"" + language + "\" not found.");
     }
 
-    me.load_language = function (language) {
-        return fetch("_" + language + ".json")
-            .then((r) => r.json())
-            .then((translation) => {
-                document.documentElement.setAttribute("lang", language);
-                let elements = document.querySelectorAll("[data-i18n]");
-                elements.forEach((element) => {
-                    let key = element.dataset.i18n.split(".");
-                    let value = key.reduce((o, i) => o[i], translation);
-                    if (value) {
-                        element.innerHTML = value;
-                    }
-                });
+    me.load_language = async (language) => fetch("_" + language + ".json")
+        .then((r) => r.json())
+        .then((translation) => {
+            document.documentElement.setAttribute("lang", language);
+            let elements = document.querySelectorAll("[data-i18n]");
+            elements.forEach((element) => {
+                let key = element.dataset.i18n.split(".");
+                let value = key.reduce((o, i) => o[i], translation);
+                if (value) {
+                    element.innerHTML = value;
+                }
             });
-    }
+        });
 
     me.get_languages()
         .then(() => me.fill_languages())
