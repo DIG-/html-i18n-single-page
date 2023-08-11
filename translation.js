@@ -29,17 +29,10 @@
         let languages = [];
         if (optional && (optional.length == 2 || optional.length == 5)) {
             languages.push(optional);
+        } else if (navigator.languages) {
+            languages = languages.concat(navigator.languages);
         } else {
-            let from_location = window.location.hash;
-            if (from_location.length == 6 || from_location.length == 3) {
-                languages.push(window.location.hash.substring(1));
-            } else {
-                if (navigator.languages) {
-                    languages = languages.concat(navigator.languages);
-                } else {
-                    languages.push(navigator.language);
-                }
-            }
+            languages.push(navigator.language);
         }
         languages.push("en"); // Add default
 
