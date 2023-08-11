@@ -2,6 +2,8 @@
     const me = {};
     me.languages = null;
 
+    me.flag_element = () => document.getElementById("flag");
+
     me.get_languages = function () {
         if (me.languages != null) {
             return Promise.resolve(me.languages);
@@ -15,6 +17,15 @@
     };
 
     me.fill_languages = function () {
+        let flag_element = me.flag_element();
+        Object.entries(me.languages)
+            .filter(([_, data]) => data.flag != null)
+            .forEach(([key, data]) => {
+                let option = document.createElement("option");
+                option.value = key;
+                option.text = data.flag;
+                flag_element.add(option);
+            });
         return Promise.resolve(me.languages);
     };
 
@@ -81,7 +92,18 @@
         .then(() => me.fill_languages())
         .then(() => me.get_user_language())
         .then((language) => me.resolve_language(language))
-        .then((language) => me.load_language(language))
+        .then((language) => {
+            let flag_element = me.flag_element();
+            flag_element.value = language;
+            flag_element.onchange = () => {
+                me.load_language(flag_element.value)
+                    .catch((reason) => {
+                        alert("Failed to load language!");
+                        console.error("Failed to load language.", reason);
+                    });
+            };
+            return me.load_language(language);
+        })
         .catch((reason) => console.error("Failed to load language.", reason));
 
 })();
