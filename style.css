@@ -1,13 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 @import url("https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap");
 
 body {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: Roboto, Verdana, Geneva, Tahoma, sans-serif;
 }
 
 #flag {
-    font-family: "Noto Color Emoji", Verdana, sans-serif;
+    font-family: "Noto Color Emoji", Roboto, Verdana, sans-serif;
 }
 
 .emoji {
-    font-family: "Noto Color Emoji", Verdana, sans-serif;
+    font-family: "Noto Color Emoji", Roboto, Verdana, sans-serif;
 }
