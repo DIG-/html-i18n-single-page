@@ -65,6 +65,7 @@
         return fetch("_" + language + ".json")
             .then((r) => r.json())
             .then((translation) => {
+                document.documentElement.setAttribute("lang", language);
                 let elements = document.querySelectorAll("[data-i18n]");
                 elements.forEach((element) => {
                     let key = element.dataset.i18n.split(".");
