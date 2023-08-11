@@ -34,7 +34,7 @@
         } else {
             languages.push(navigator.language);
         }
-        languages.push("en"); // Add default
+        languages.push(document.documentElement.getAttribute("lang") || "en"); // Default language at startup
 
         const user_language = languages.find((language) => {
             if (me.languages[language]) {
