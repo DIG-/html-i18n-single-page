@@ -61,14 +61,24 @@
         return Promise.reject("Language \"" + language + "\" not found.");
     }
 
+    me.walk = (source, keys) => {
+        var current = source;
+        keys.forEach((key) => {
+            if (current) {
+                current = current[key];
+            }
+        })
+        return current;
+    }
+
     me.load_language = async (language) => fetch("_" + language + ".json")
         .then((r) => r.json())
         .then((translation) => {
             document.documentElement.setAttribute("lang", language);
             let elements = document.querySelectorAll("[data-i18n]");
             elements.forEach((element) => {
-                let key = element.dataset.i18n.split(".");
-                let value = key.reduce((o, i) => o[i], translation);
+                let keys = element.dataset.i18n.split(".");
+                let value = me.walk(translation, keys);
                 if (value) {
                     element.innerHTML = value;
                 }
