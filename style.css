@@ -50,6 +50,36 @@ p {
     margin-bottom: 0;
 }
 
+ol {
+    counter-reset: item;
+    margin: 0;
+    padding: 0;
+}
+
+ol li {
+    margin-top: 4pt;
+}
+
+ol li::marker {
+    content: " ";
+}
+
+ol li:before {
+    content: counters(item, ".") " ";
+    counter-increment: item;
+}
+
+ol>li {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+ol>li>ol>li,
+ol>li>p {
+    font-size: 0.6666666666em;
+    font-weight: normal;
+}
+
 @media screen and (min-width: 600px) {
     .main-content {
         max-width: calc(1000px - 32pt);
