@@ -69,9 +69,10 @@ ol li:before {
     counter-increment: item;
 }
 
-ol>li {
+div>ol>li {
     font-size: 1.5em;
     font-weight: bold;
+    margin-top: 16pt;
 }
 
 ol>li>ol>li,
